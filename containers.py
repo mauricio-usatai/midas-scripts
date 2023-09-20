@@ -26,6 +26,22 @@ containers = {
         },
         "network": "midas",
     },
+    "dynamodb": {
+        "name": "dynamodb",
+        "image": "amazon/dynamodb-local:latest",
+        "command": "-jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data/",
+        "environment": {
+            "MINIO_ROOT_USER": "miniodev",
+            "MINIO_ROOT_PASSWORD": "miniodev",
+        },
+        "volumes": [
+            "/Users/musatai/code/midas/dynamodb-storage:/home/dynamodblocal/data"
+        ],
+        "ports": {
+            "8000": 8000,
+        },
+        "network": "midas",
+    },
     "midas-news-parser": {
         "name": "midas-news-parser",
         "image": "midas/news-parser:0.1.0",
@@ -51,6 +67,15 @@ containers = {
     "midas-heuristic-scorer": {
         "name": "midas-heuristic-scorer",
         "image": "midas/heuristic-scorer:0.1.0",
+        "environment": {
+            "RUN_ID": settings.RUN_ID,
+            "BUCKET": settings.BUCKET,
+        },
+        "network": "midas",
+    },
+    "bifrost-data-bridge": {
+        "name": "bifrost-data-bridge",
+        "image": "midas/bifrost-data-bridge:0.1.0",
         "environment": {
             "RUN_ID": settings.RUN_ID,
             "BUCKET": settings.BUCKET,

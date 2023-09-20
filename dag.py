@@ -30,7 +30,13 @@ def main():
     if not docker_c.networks.list(names="midas"):
         docker_c.networks.create("midas", driver="bridge")
 
-    # Start minio and create inital bucket
+    # Start local dynamoDB
+    docker_c.containers.run(
+        **containers["dynamodb"],
+        detach=True,
+    )
+
+    # Start MinIO and create inital bucket
     docker_c.containers.run(
         **containers["minio"],
         detach=True,
@@ -44,6 +50,7 @@ def main():
     run("midas-news-parser")
     run("midas-news-scorer")
     run("midas-heuristic-scorer")
+    run("bifrost-data-bridge")
 
 
 if __name__ == "__main__":

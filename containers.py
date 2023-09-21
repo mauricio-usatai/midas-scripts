@@ -5,6 +5,7 @@ import docker
 from botocore.exceptions import ClientError
 
 from settings import Settings
+from utils import DotSpinner
 
 
 settings = Settings()
@@ -103,8 +104,15 @@ def configure_minio() -> None:
 
 
 def wait_for_container(name: str) -> None:
+    spinner = DotSpinner("Waiting for contanier to run")
     while True:
-        status = docker_c.containers.get(name).status
-        if status == "exited":
+        for _ in range(20):  # each frame takes 0.1 seconds so 2/0.1
+            next(spinner)
+            time.sleep(0.1)
+
+        container = docker_c.containers.get(name)
+        if container.status == "exited":
+            print("\ncontainer logs:")
+            print(container.logs())
+            container.remove()
             break
-        time.sleep(1)

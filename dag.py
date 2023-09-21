@@ -25,19 +25,19 @@ def run(container_name: str) -> None:
     wait_for_container(container_name)
 
 
-def main():
+def run_dag():
     # Create container network
     if not docker_c.networks.list(names="midas"):
         docker_c.networks.create("midas", driver="bridge")
 
     # Start local dynamoDB
-    docker_c.containers.run(
+    dynamodb = docker_c.containers.run(
         **containers["dynamodb"],
         detach=True,
     )
 
     # Start MinIO and create inital bucket
-    docker_c.containers.run(
+    minio = docker_c.containers.run(
         **containers["minio"],
         detach=True,
     )
@@ -52,6 +52,13 @@ def main():
     run("midas-heuristic-scorer")
     run("bifrost-data-bridge")
 
+    # Kill and remove remaining containers
+    minio.kill()
+    minio.remove()
+
+    dynamodb.kill()
+    dynamodb.remove()
+
 
 if __name__ == "__main__":
-    main()
+    run_dag()

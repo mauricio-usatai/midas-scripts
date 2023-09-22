@@ -41,6 +41,12 @@ class Settings(BaseSettings):
     Aqui está a notícia: {news_content}
     """
 
+    # Twilio
+    TWILIO_SID: str = os.environ.get("TWILIO_SID", "dummy-sid")
+    TWILIO_TOKEN: str = os.environ.get("TWILIO_TOKEN", "dummy-token")
+    TO_NUMBER: str = os.environ.get("TO_NUMBER", "123456789")
+    FROM_NUMBER: str = os.environ.get("FROM_NUMBER", "123456789")
+
     # General
     REQUESTS_TIMEOUT: int = 5  # seconds
     LOGGER: str = "LOGGER"

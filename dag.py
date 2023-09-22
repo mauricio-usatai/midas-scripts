@@ -25,7 +25,7 @@ def run(container_name: str) -> None:
     wait_for_container(container_name)
 
 
-def run_dag():
+def dag():
     # Create container network
     if not docker_c.networks.list(names="midas"):
         docker_c.networks.create("midas", driver="bridge")
@@ -61,4 +61,4 @@ def run_dag():
 
 
 if __name__ == "__main__":
-    run_dag()
+    dag()
